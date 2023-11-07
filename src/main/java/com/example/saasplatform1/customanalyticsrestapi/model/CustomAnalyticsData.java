@@ -1,9 +1,6 @@
 package com.example.saasplatform1.customanalyticsrestapi.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,7 +13,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CustomAnalyticsAndDimension {
+public class CustomAnalyticsData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
