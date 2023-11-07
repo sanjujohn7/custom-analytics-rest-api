@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/uploads")
+@RequestMapping("/custom-analytics")
 public class CustomAnalyticsController {
     public final CustomAnalyticsService customAnalyticsService;
     @Autowired
@@ -18,13 +18,9 @@ public class CustomAnalyticsController {
         this.customAnalyticsService = customAnalyticsService;
     }
 
-    @PostMapping()
+    @PostMapping("/upload")
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file){
-        if (file != null && file.getOriginalFilename() != null && file.getOriginalFilename().endsWith(".csv")) {
-                customAnalyticsService.uploadDataFromCsv(file);
-                return ResponseEntity.ok("CSV file uploaded and data loaded successfully.");
-        } else {
-            return ResponseEntity.badRequest().body("Only CSV files are allowed.");
-        }
+        String response = customAnalyticsService.uploadDataFromCsv(file);
+      return ResponseEntity.ok(response);
     }
 }
