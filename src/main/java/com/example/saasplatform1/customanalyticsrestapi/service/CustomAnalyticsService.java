@@ -1,5 +1,7 @@
 package com.example.saasplatform1.customanalyticsrestapi.service;
 
+import com.example.saasplatform1.customanalyticsrestapi.exception.CustomDataUploadException;
+import com.example.saasplatform1.customanalyticsrestapi.exception.FileNotPresentException;
 import com.example.saasplatform1.customanalyticsrestapi.model.CustomAnalyticsAndDimension;
 import com.example.saasplatform1.customanalyticsrestapi.repository.CustomAnalyticsRepository;
 import org.apache.commons.csv.CSVFormat;
@@ -9,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.text.ParseException;
@@ -26,7 +30,10 @@ public class CustomAnalyticsService {
     }
 
 
-    public void uploadDataFromCsv(MultipartFile file) {
+    public String uploadDataFromCsv(MultipartFile file) {
+        if (file == null || (!file.getOriginalFilename().endsWith(".csv"))){
+        throw new FileNotPresentException("Invalid file. Please provide a CSV file.");
+        }
         try (Reader reader = new InputStreamReader(file.getInputStream())) {
             CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT.withHeader());
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -44,13 +51,15 @@ public class CustomAnalyticsService {
 
                 customAnalyticsRepository.save(customAnalyticsAndDimension);
             }
-        }catch (Exception ex){
-
+            return "CSV file uploaded and data loaded successfully.";
+        }catch (IOException | ParseException ex){
+            throw new CustomDataUploadException("Failed to upload and process CSV file");
         }
     }
-
     private LocalDate parseDate(SimpleDateFormat dateFormat, String dateString) throws ParseException {
         Date parsedDate = dateFormat.parse(dateString);
         return parsedDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     }
+
+
 }
