@@ -100,4 +100,25 @@ public class CustomAnalyticsService {
                 .collect(Collectors.toList());
     }
 
+    public String generateCsvTemplate() {
+        StringBuilder csvTemplate = new StringBuilder();
+        String[] headers = {
+                "Date",
+                "Product Category",
+                "Geographic Location",
+                "Total Sales",
+                "Total Profit",
+                "Average Session Time",
+                "Unique Visitors"
+        };
+        // Append the headers
+        for (String header : headers) {
+            csvTemplate.append(header).append(","); // Use a tab as a delimiter
+        }
+        csvTemplate.setLength(csvTemplate.length() - 1);
+        csvTemplate.append("\n");
+
+        return csvTemplate.toString();
+    }
+
 }
