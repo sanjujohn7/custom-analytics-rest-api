@@ -3,12 +3,14 @@ package com.example.saasplatform1.customanalyticsrestapi.controller;
 import com.example.saasplatform1.customanalyticsrestapi.contract.CustomAnalyticsDataResponse;
 import com.example.saasplatform1.customanalyticsrestapi.model.CustomAnalyticsData;
 import com.example.saasplatform1.customanalyticsrestapi.service.CustomAnalyticsService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -47,5 +49,19 @@ public class CustomAnalyticsController {
         );
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/download-csv-template")
+    public void downloadCsvTemplate(HttpServletResponse response) throws IOException {
+        // Set the response headers for a CSV file download
+        response.setContentType("text/csv");
+        response.setHeader("Content-Disposition", "attachment; filename=csv-template.csv");
+
+        String csvTemplate = customAnalyticsService.generateCsvTemplate();
+
+        // Write the template to the response
+        response.getWriter().write(csvTemplate);
+    }
+
+
 
 }
