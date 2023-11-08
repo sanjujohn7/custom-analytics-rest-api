@@ -1,6 +1,10 @@
 package com.example.saasplatform1.customanalyticsrestapi.controller;
 
+
 import com.example.saasplatform1.customanalyticsrestapi.contract.GetTotalProfitAndCountResponse;
+
+import com.example.saasplatform1.customanalyticsrestapi.contract.CustomAnalyticsDataFilterRequest;
+
 import com.example.saasplatform1.customanalyticsrestapi.contract.CustomAnalyticsDataResponse;
 import com.example.saasplatform1.customanalyticsrestapi.service.CustomAnalyticsService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -42,10 +46,10 @@ public class CustomAnalyticsController {
             @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
             @RequestParam(value = "sortBy", defaultValue = "date") String sortBy,
             @RequestParam(value = "order", defaultValue = "asc") String order,
-            @RequestParam(value = "filterBy", required = false) String filterBy
+            @ModelAttribute CustomAnalyticsDataFilterRequest filter
     ){
         List<CustomAnalyticsDataResponse> response = customAnalyticsService.searchBasedOnFilterAndSort(
-                pageNo, pageSize, sortBy, order, filterBy
+                pageNo, pageSize, sortBy, order, filter
         );
         return ResponseEntity.ok(response);
     }
