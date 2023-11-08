@@ -5,8 +5,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 public interface CustomAnalyticsRepository extends JpaRepository<CustomAnalyticsData, Long> {
+    List<CustomAnalyticsData> findByDateBetweenAndProductCategory(LocalDate fromDate, LocalDate toDate, String productCategory);
+
+    List<CustomAnalyticsData> findByDateBetweenAndGeographicLocation(LocalDate fromDate, LocalDate toDate, String geographicLocation);
+    List<CustomAnalyticsData> findByDateBetween(LocalDate fromDate, LocalDate toDate);
+
+
 }

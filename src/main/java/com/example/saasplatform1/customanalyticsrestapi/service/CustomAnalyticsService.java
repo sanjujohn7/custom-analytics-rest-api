@@ -1,13 +1,11 @@
 package com.example.saasplatform1.customanalyticsrestapi.service;
 
+import com.example.saasplatform1.customanalyticsrestapi.contract.GetTotalProfitAndCountResponse;
 import com.example.saasplatform1.customanalyticsrestapi.contract.CustomAnalyticsDataResponse;
 import com.example.saasplatform1.customanalyticsrestapi.exception.CustomDataUploadException;
 import com.example.saasplatform1.customanalyticsrestapi.exception.FileNotPresentException;
 import com.example.saasplatform1.customanalyticsrestapi.model.CustomAnalyticsData;
 import com.example.saasplatform1.customanalyticsrestapi.repository.CustomAnalyticsRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -17,7 +15,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,8 +28,6 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
@@ -119,6 +114,34 @@ public class CustomAnalyticsService {
         csvTemplate.append("\n");
 
         return csvTemplate.toString();
+    }
+
+    public GetTotalProfitAndCountResponse getTotalSalesAndCount(LocalDate fromDate, LocalDate toDate, String productCategory) {
+        List<CustomAnalyticsData> dataList = new ArrayList<>();
+
+        if (fromDate != null && toDate != null && productCategory != null) {
+            dataList = customAnalyticsRepository.findByDateBetweenAndProductCategory(fromDate, toDate, productCategory);
+        } else if (fromDate != null && toDate != null) {
+            dataList = customAnalyticsRepository.findByDateBetween(fromDate, toDate);
+        }
+
+        double totalCount = dataList.stream().mapToDouble(C->C.getTotalSales()).sum();
+        double totalProfit = dataList.stream().mapToDouble(C->C.getTotalProfit()).sum();
+        return GetTotalProfitAndCountResponse.builder().totalProductCount(totalCount).totalProductProfit(totalProfit).build();
+    }
+
+    public GetTotalProfitAndCountResponse getLocationTotalSalesAndCount(LocalDate fromDate, LocalDate toDate, String geographicLocation) {
+        List<CustomAnalyticsData> dataList = new ArrayList<>();
+
+        if (fromDate != null && toDate != null && geographicLocation != null) {
+            dataList = customAnalyticsRepository.findByDateBetweenAndGeographicLocation(fromDate, toDate, geographicLocation);
+        } else if (fromDate != null && toDate != null) {
+            dataList = customAnalyticsRepository.findByDateBetween(fromDate, toDate);
+        }
+
+        double totalCount = dataList.stream().mapToDouble(C->C.getTotalSales()).sum();
+        double totalProfit = dataList.stream().mapToDouble(C->C.getTotalProfit()).sum();
+        return GetTotalProfitAndCountResponse.builder().totalProductCount(totalCount).totalProductProfit(totalProfit).build();
     }
 
 }
