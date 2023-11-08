@@ -1,7 +1,7 @@
 package com.example.saasplatform1.customanalyticsrestapi.controller;
 
+import com.example.saasplatform1.customanalyticsrestapi.contract.CustomAnalyticsDataFilterRequest;
 import com.example.saasplatform1.customanalyticsrestapi.contract.CustomAnalyticsDataResponse;
-import com.example.saasplatform1.customanalyticsrestapi.model.CustomAnalyticsData;
 import com.example.saasplatform1.customanalyticsrestapi.service.CustomAnalyticsService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -42,10 +41,10 @@ public class CustomAnalyticsController {
             @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
             @RequestParam(value = "sortBy", defaultValue = "date") String sortBy,
             @RequestParam(value = "order", defaultValue = "asc") String order,
-            @RequestParam(value = "filterBy", required = false) String filterBy
+            @ModelAttribute CustomAnalyticsDataFilterRequest filter
     ){
         List<CustomAnalyticsDataResponse> response = customAnalyticsService.searchBasedOnFilterAndSort(
-                pageNo, pageSize, sortBy, order, filterBy
+                pageNo, pageSize, sortBy, order, filter
         );
         return ResponseEntity.ok(response);
     }
