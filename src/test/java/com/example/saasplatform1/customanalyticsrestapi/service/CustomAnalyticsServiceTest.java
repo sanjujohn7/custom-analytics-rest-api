@@ -2,6 +2,8 @@ package com.example.saasplatform1.customanalyticsrestapi.service;
 
 
 import com.example.saasplatform1.customanalyticsrestapi.contract.CustomAnalyticsDataResponse;
+import com.example.saasplatform1.customanalyticsrestapi.exception.CustomDataUploadException;
+import com.example.saasplatform1.customanalyticsrestapi.exception.FileNotPresentException;
 import com.example.saasplatform1.customanalyticsrestapi.model.CustomAnalyticsData;
 import com.example.saasplatform1.customanalyticsrestapi.repository.CustomAnalyticsRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @AutoConfigureMockMvc
@@ -61,6 +64,30 @@ public class CustomAnalyticsServiceTest {
         assertEquals("CSV file uploaded and data loaded successfully.", result);
     }
 
+    @Test
+    public void testUploadDataFromCsvWithInvalidCsvFile() {
+        // Given
+        MultipartFile file = mock(MultipartFile.class);
+
+        //When
+        when(file.getOriginalFilename()).thenReturn("invalid.txt");
+
+        assertThrows(FileNotPresentException.class, () -> customAnalyticsService.uploadDataFromCsv(file));
+    }
+
+    @Test
+    public void testUploadDataFromCsvWithIOException() throws IOException {
+
+        MultipartFile file = mock(MultipartFile.class);
+        when(file.getOriginalFilename()).thenReturn("valid.csv");
+        when(file.getInputStream()).thenThrow(new IOException("Test IOException"));
+
+        // Assert
+        assertThrows(CustomDataUploadException.class, () -> {
+            customAnalyticsService.uploadDataFromCsv(file);
+        });
+    }
+
 
     @Test
     public void testListAllCustomAnalyticsData() {
@@ -92,5 +119,15 @@ public class CustomAnalyticsServiceTest {
         assertEquals(1L, result.get(0).getId());
         assertEquals(LocalDate.parse("2023-10-30"), result.get(0).getDate());
         assertEquals("Test", result.get(0).getProductCategory());
+    }
+
+    @Test
+    public void testGenerateCsvTemplate() {
+
+        //Given
+        String expectedCsvTemplate = "Date,Product Category,Geographic Location,Total Sales,Total Profit,Average Session Time,Unique Visitors\n";
+        String actualCsvTemplate = customAnalyticsService.generateCsvTemplate();
+
+        assertEquals(expectedCsvTemplate, actualCsvTemplate);
     }
 }
