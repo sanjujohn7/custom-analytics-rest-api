@@ -1,6 +1,10 @@
 package com.example.saasplatform1.customanalyticsrestapi.service;
 
+
+import com.example.saasplatform1.customanalyticsrestapi.contract.GetTotalProfitAndCountResponse;
+
 import com.example.saasplatform1.customanalyticsrestapi.contract.CustomAnalyticsDataFilterRequest;
+
 import com.example.saasplatform1.customanalyticsrestapi.contract.CustomAnalyticsDataResponse;
 import com.example.saasplatform1.customanalyticsrestapi.exception.CustomDataUploadException;
 import com.example.saasplatform1.customanalyticsrestapi.exception.FileNotPresentException;
@@ -30,6 +34,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -137,6 +142,34 @@ public class CustomAnalyticsService {
         csvTemplate.append("\n");
 
         return csvTemplate.toString();
+    }
+
+    public GetTotalProfitAndCountResponse getTotalSalesAndCount(LocalDate fromDate, LocalDate toDate, String productCategory) {
+        List<CustomAnalyticsData> dataList = new ArrayList<>();
+
+        if (fromDate != null && toDate != null && productCategory != null) {
+            dataList = customAnalyticsRepository.findByDateBetweenAndProductCategory(fromDate, toDate, productCategory);
+        } else if (fromDate != null && toDate != null) {
+            dataList = customAnalyticsRepository.findByDateBetween(fromDate, toDate);
+        }
+
+        double totalCount = dataList.stream().mapToDouble(C->C.getTotalSales()).sum();
+        double totalProfit = dataList.stream().mapToDouble(C->C.getTotalProfit()).sum();
+        return GetTotalProfitAndCountResponse.builder().totalProductCount(totalCount).totalProductProfit(totalProfit).build();
+    }
+
+    public GetTotalProfitAndCountResponse getLocationTotalSalesAndCount(LocalDate fromDate, LocalDate toDate, String geographicLocation) {
+        List<CustomAnalyticsData> dataList = new ArrayList<>();
+
+        if (fromDate != null && toDate != null && geographicLocation != null) {
+            dataList = customAnalyticsRepository.findByDateBetweenAndGeographicLocation(fromDate, toDate, geographicLocation);
+        } else if (fromDate != null && toDate != null) {
+            dataList = customAnalyticsRepository.findByDateBetween(fromDate, toDate);
+        }
+
+        double totalCount = dataList.stream().mapToDouble(C->C.getTotalSales()).sum();
+        double totalProfit = dataList.stream().mapToDouble(C->C.getTotalProfit()).sum();
+        return GetTotalProfitAndCountResponse.builder().totalProductCount(totalCount).totalProductProfit(totalProfit).build();
     }
 
 }

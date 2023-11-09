@@ -1,6 +1,10 @@
 package com.example.saasplatform1.customanalyticsrestapi.controller;
 
+
+import com.example.saasplatform1.customanalyticsrestapi.contract.GetTotalProfitAndCountResponse;
+
 import com.example.saasplatform1.customanalyticsrestapi.contract.CustomAnalyticsDataFilterRequest;
+
 import com.example.saasplatform1.customanalyticsrestapi.contract.CustomAnalyticsDataResponse;
 import com.example.saasplatform1.customanalyticsrestapi.service.CustomAnalyticsService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -11,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -61,6 +66,22 @@ public class CustomAnalyticsController {
         response.getWriter().write(csvTemplate);
     }
 
+    @GetMapping("/product-category/total")
+    public ResponseEntity<GetTotalProfitAndCountResponse> AggregateProductCategoryCustomAnalyticsData(
+            @RequestParam(value = "fromDate", required = true) LocalDate fromDate,
+            @RequestParam(value = "toDate", required = true) LocalDate toDate ,
+            @RequestParam(value = "productCategory", required = false) String productCategory){
+        GetTotalProfitAndCountResponse response = customAnalyticsService.getTotalSalesAndCount(fromDate,toDate,productCategory);
+        return ResponseEntity.ok(response);
+    }
 
+    @GetMapping("/geographic-location/total")
+    public ResponseEntity<GetTotalProfitAndCountResponse> AggregateLocationCustomAnalyticsData(
+            @RequestParam(value = "fromDate", required = true) LocalDate fromDate,
+            @RequestParam(value = "toDate", required = true) LocalDate toDate ,
+            @RequestParam(value = "geographicLocation", required = false) String geographicLocation){
+        GetTotalProfitAndCountResponse response = customAnalyticsService.getLocationTotalSalesAndCount(fromDate,toDate,geographicLocation);
+        return ResponseEntity.ok(response);
+    }
 
 }
