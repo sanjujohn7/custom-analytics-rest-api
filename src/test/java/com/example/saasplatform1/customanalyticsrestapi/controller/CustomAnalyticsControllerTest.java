@@ -76,4 +76,17 @@ public class CustomAnalyticsControllerTest {
                 .andExpect(jsonPath("$[0].geographicLocation", is("Test")))
                 .andExpect(jsonPath("$[0].totalSales", is(1.0)));
     }
+
+    @Test
+    public void testDownloadCsvTemplate() throws Exception {
+        // Given
+        String csvTemplate = "Header1,Header2,Value1,Value2";
+        when(customAnalyticsService.generateCsvTemplate()).thenReturn(csvTemplate);
+
+        mockMvc.perform(get("/custom-analytics/download-csv-template"))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Content-Disposition", "attachment; filename=csv-template.csv"))
+                .andExpect(header().string("Content-Type", "text/csv"))
+                .andReturn();
+    }
 }
