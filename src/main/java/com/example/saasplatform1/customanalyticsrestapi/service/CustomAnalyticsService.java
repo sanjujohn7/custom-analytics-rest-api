@@ -82,64 +82,6 @@ public class CustomAnalyticsService {
         return parsedDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public List<CustomAnalyticsDataResponse> listAllCustomAnalyticsData(int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<CustomAnalyticsData> customAnalyticsData =
