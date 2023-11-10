@@ -83,6 +83,63 @@ public class CustomAnalyticsService {
     }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public List<CustomAnalyticsDataResponse> listAllCustomAnalyticsData(int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<CustomAnalyticsData> customAnalyticsData =

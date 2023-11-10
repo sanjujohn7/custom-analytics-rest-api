@@ -38,10 +38,11 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public AuthResponse authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
+    public ResponseEntity<AuthResponse> authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getName(), authRequest.getPassword()));
         if (authentication.isAuthenticated()) {
-            return jwtService.generateToken(authRequest.getName());
+            AuthResponse response = jwtService.generateToken(authRequest.getName());
+            return ResponseEntity.ok(response);
         } else {
             throw new UserNotFoundException("Invalid user request !");
         }

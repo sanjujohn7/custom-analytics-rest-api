@@ -39,6 +39,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers(HttpMethod.POST, "/custom-analytics/sign-up").permitAll()
                         .requestMatchers(HttpMethod.POST, "/custom-analytics/login").permitAll()
+                        .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**").permitAll()
                         .requestMatchers("/custom-analytics/**").authenticated()
                 )
                 .sessionManagement((session) -> session

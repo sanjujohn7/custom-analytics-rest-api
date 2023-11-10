@@ -20,5 +20,7 @@ public class CustomAnalyticsRestApiApplication {
 				.setFieldMatchingEnabled(true)
 				.setFieldAccessLevel(Configuration.AccessLevel.PRIVATE);
 		return mapper;
+
+
 	}
 }

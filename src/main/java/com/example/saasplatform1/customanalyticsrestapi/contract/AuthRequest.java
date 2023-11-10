@@ -1,15 +1,13 @@
 package com.example.saasplatform1.customanalyticsrestapi.contract;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class AuthRequest {
     private String name;
-    private String Password;
+    private String password;
 }
